@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manasvi Shelke | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1 id="mainHeading">Manasvi Shelke</h1>
+        <p>Student | Web Developer</p>
+        <button onclick="changeHeading()">Change Heading (DOM)</button>
+    </header>
+
+    <section class="about">
+        <h2>About Me</h2>
+        <p>
+            I am Manasvi Shelke, a passionate student learning full stack web development.
+            I enjoy building clean and interactive websites.
+        </p>
+    </section>
+
+    <section class="projects">
+        <h2>Projects</h2>
+
+        <div class="project-card">
+            <h3>Portfolio Website</h3>
+            <p>A personal portfolio website using HTML and CSS.</p>
+        </div>
+
+        <div class="project-card">
+            <h3>Registration Form</h3>
+            <p>A form with JavaScript validation.</p>
+        </div>
+
+        <div class="project-card">
+            <h3>Landing Page</h3>
+            <p>A responsive landing page design.</p>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Contact Me</h2>
+
+        <form onsubmit="return validateForm()">
+
+            <input type="text" id="username" placeholder="Your Name">
+            <input type="email" id="email" placeholder="Your Email">
+            <input type="text" id="phone" placeholder="Phone Number">
+            <input type="password" id="password" placeholder="Password">
+            <input type="password" id="confirmPassword" placeholder="Confirm Password">
+
+            <button type="submit" id="submitBtn">Submit</button>
+
+        </form>
+    </section>
+
+    <footer>
+        <p>© 2026 Manasvi Shelke</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
