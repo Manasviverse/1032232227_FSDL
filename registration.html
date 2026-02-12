@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration - Manasvi Shelke</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* All styles embedded here */
+        :root {
+            --primary-color: #00d2d3;
+            --bg-color: #121212;
+            --bg-light: #1e1e1e;
+            --text-color: #f0f0f0;
+            --text-secondary: #aaaaaa;
+            --font-main: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        header {
+            background-color: rgba(18, 18, 18, 0.95);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #333;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo span { color: var(--primary-color); }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--primary-color); }
+
+        .btn-main {
+            background-color: var(--primary-color);
+            color: #121212 !important;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600 !important;
+        }
+
+        .btn-main:hover { opacity: 0.8; }
+
+        /* Registration Section */
+        .registration-section {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            padding: 80px 20px;
+            background-color: #0f0f0f;
+        }
+
+        .form-wrapper {
+            max-width: 550px;
+            margin: 0 auto;
+            background-color: var(--bg-light);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-wrapper h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--bg-color);
+            border: 2px solid #333;
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-family: var(--font-main);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: rgba(0, 210, 211, 0.05);
+        }
+
+        /* Validation States */
+        .input-valid {
+            border-color: #00d2d3 !important;
+            background-color: rgba(0, 210, 211, 0.05) !important;
+        }
+
+        .input-error {
+            border-color: #ff4444 !important;
+            background-color: rgba(255, 68, 68, 0.05) !important;
+        }
+
+        /* Error Messages */
+        .error-message {
+            display: block;
+            color: #ff4444;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Password Requirements Indicator */
+        .password-requirements {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+
+        .requirements-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .password-requirements ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .requirement {
+            font-size: 0.85rem;
+            color: #aaaaaa;
+            margin: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        .requirement.valid {
+            color: #00d2d3;
+        }
+
+        .requirement.invalid {
+            color: #ff4444;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: #121212;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 210, 211, 0.3);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Success Message */
+        .success-box {
+            text-align: center;
+            padding: 30px;
+            background-color: rgba(0, 210, 211, 0.1);
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .success-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 30px;
+            text-align: center;
+            background-color: #000;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #222;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            
+            .form-wrapper {
+                padding: 25px;
+            }
+            
+            .form-wrapper h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav class="container">
+            <div class="logo">Portfo<span>lio.</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="registration.html" class="btn-main">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Registration Form Section -->
+    <section class="registration-section">
+        <div class="form-wrapper">
+            <h2>Student Registration</h2>
+            <p class="form-subtitle">Fill in your details to register</p>
+            
+            <form id="registrationForm">
+                <!-- Username Field -->
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        placeholder="Enter your username"
+                    >
+                </div>
+
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="example@domain.com"
+                    >
+                </div>
+
+                <!-- Phone Number Field -->
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        name="phone" 
+                        placeholder="10-digit phone number"
+                    >
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Enter password"
+                    >
+                    <!-- Password strength indicator -->
+                    <div class="password-requirements">
+                        <p class="requirements-title">Password must contain:</p>
+                        <ul>
+                            <li id="req-length" class="requirement">✗ At least 7 characters</li>
+                            <li id="req-uppercase" class="requirement">✗ One uppercase letter</li>
+                            <li id="req-digit" class="requirement">✗ One digit</li>
+                            <li id="req-special" class="requirement">✗ One special character ($, #, @)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password *</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        placeholder="Re-enter password"
+                    >
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit">Register</button>
+            </form>
+
+            <!-- Success message (hidden initially) -->
+            <div id="successMessage" class="success-box" style="display: none;">
+                <h3>✓ Registration Successful!</h3>
+                <p>Your account has been created successfully.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Manasvi Shelke. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
