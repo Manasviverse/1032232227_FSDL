@@ -1,9 +1,4 @@
-// app.js - Complete JavaScript for Registration Form and Portfolio
-// Contains: Form Validation, jQuery Operations, and Project Modal Logic
 
-// ============================================
-// PART 1: INITIALIZATION
-// ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -18,9 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// ============================================
-// PART 2: FORM VALIDATION LOGIC
-// ============================================
+
 
 function initializeFormValidation() {
     const form = document.getElementById('registrationForm');
@@ -307,9 +300,6 @@ function handleFormSubmit() {
     }
 }
 
-// ============================================
-// PART 3: JQUERY OPERATIONS
-// ============================================
 
 $(document).ready(function() {
     
@@ -355,9 +345,6 @@ $(document).ready(function() {
     });
 });
 
-// ============================================
-// PART 4: PROJECT DATA AND MODAL LOGIC
-// ============================================
 
 // Project data array
 const projects = [
@@ -489,9 +476,7 @@ function closeProjectModal() {
     $('body').css('overflow', 'auto');
 }
 
-// ============================================
-// PART 5: ADDITIONAL DOM MANIPULATION EXAMPLES
-// ============================================
+
 
 // Example: Modify attribute using DOM
 function demoAttributeModification() {
@@ -511,28 +496,11 @@ function demoAttributeModification() {
     submitButton.disabled = false;
 }
 
-// Example: jQuery Ajax (for reference - commented out as no backend)
-/*
-function submitFormWithAjax() {
-    $.ajax({
-        url: 'submit-registration.php',
-        type: 'POST',
-        data: $('#registrationForm').serialize(),
-        dataType: 'json',
-        success: function(response) {
-            console.log('Success:', response);
-            $('#successMessage').fadeIn();
-        },
-        error: function(xhr, status, error) {
-            console.log('Error:', error);
-            alert('Submission failed. Please try again.');
-        }
-    });
-}
-*/
+
 
 // Log when script loads
 console.log('App.js loaded successfully!');
 console.log('Form validation ready');
 console.log('jQuery operations ready');
+
 console.log('Project modal ready');
