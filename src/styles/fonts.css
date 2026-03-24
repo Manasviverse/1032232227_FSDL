@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+/* ─── Neon Animations ─── */
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 5px var(--glow), 0 0 15px var(--glow), 0 0 30px var(--glow-far); }
+  50% { box-shadow: 0 0 10px var(--glow), 0 0 25px var(--glow), 0 0 50px var(--glow-far); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes glow-border {
+  0%, 100% { border-color: rgba(47, 128, 237, 0.4); box-shadow: 0 0 10px rgba(47, 128, 237, 0.2); }
+  50% { border-color: rgba(123, 97, 255, 0.7); box-shadow: 0 0 20px rgba(123, 97, 255, 0.4); }
+}
+
+@keyframes score-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); color: #FACC15; }
+  100% { transform: scale(1); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes progress-bar {
+  from { width: 0%; }
+  to { width: var(--progress-width); }
+}
+
+@keyframes timer-pulse {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px currentColor); }
+  50% { opacity: 0.7; filter: drop-shadow(0 0 8px currentColor); }
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes badge-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(250, 204, 21, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(250, 204, 21, 0.9), 0 0 40px rgba(250, 204, 21, 0.4); }
+}
+
+@keyframes streak-flame {
+  0%, 100% { transform: scale(1) rotate(-3deg); }
+  50% { transform: scale(1.1) rotate(3deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 0.8; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+/* ─── Utility Classes ─── */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #0F172A;
+  color: #E2E8F0;
+}
+
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+.glass-card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(47, 128, 237, 0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(47, 128, 237, 0.1);
+}
+
+.gradient-text-blue {
+  background: linear-gradient(135deg, #2F80ED, #7B61FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-pink {
+  background: linear-gradient(135deg, #F472B6, #FB923C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-teal {
+  background: linear-gradient(135deg, #2DD4BF, #06B6D4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.neon-border-blue {
+  border: 1px solid rgba(47, 128, 237, 0.4);
+  box-shadow: 0 0 10px rgba(47, 128, 237, 0.15), inset 0 0 10px rgba(47, 128, 237, 0.05);
+}
+
+.neon-border-purple {
+  border: 1px solid rgba(123, 97, 255, 0.4);
+  box-shadow: 0 0 10px rgba(123, 97, 255, 0.15), inset 0 0 10px rgba(123, 97, 255, 0.05);
+}
+
+.shimmer-bar {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+.progress-glow {
+  box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-badge-glow {
+  animation: badge-glow 2s ease-in-out infinite;
+}
+
+.animate-streak {
+  animation: streak-flame 0.8s ease-in-out infinite;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(47, 128, 237, 0.3) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(47, 128, 237, 0.3);
+  border-radius: 2px;
+}

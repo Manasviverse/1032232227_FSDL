@@ -1,0 +1,262 @@
+/* ============================================================
+   EduSync – Responsive Design System
+   Breakpoints:
+     phone  : ≤ 640px
+     tablet : 641px – 1023px
+     desktop: ≥ 1024px
+   ============================================================ */
+
+/* ---- Base Reset ------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* ---- Visibility Utilities ---------------------------------- */
+.hide-on-mobile  { display: initial !important; }
+.show-on-mobile  { display: none   !important; }
+
+@media (max-width: 640px) {
+  .hide-on-mobile  { display: none    !important; }
+  .show-on-mobile  { display: initial !important; }
+}
+
+.hide-on-tablet  { display: initial !important; }
+.show-on-tablet  { display: none   !important; }
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  .hide-on-tablet  { display: none    !important; }
+  .show-on-tablet  { display: initial !important; }
+}
+
+.hide-on-desktop { display: initial !important; }
+.show-on-desktop { display: none   !important; }
+
+@media (min-width: 1024px) {
+  .hide-on-desktop { display: none    !important; }
+  .show-on-desktop { display: initial !important; }
+}
+
+/* ---- Responsive Grid Utilities ----------------------------- */
+/* Use these on grid containers: auto-fill columns that collapse on small screens */
+.grid-resp-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.grid-resp-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.grid-resp-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 1023px) {
+  .grid-resp-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-resp-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .grid-resp-4 { grid-template-columns: 1fr; }
+  .grid-resp-3 { grid-template-columns: 1fr; }
+  .grid-resp-2 { grid-template-columns: 1fr; }
+}
+
+/* ---- App Shell -------------------------------------------- */
+
+/* Mobile bottom navigation bar */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: rgba(8, 14, 32, 0.97);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 100;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 4px;
+}
+
+@media (max-width: 1023px) {
+  .mobile-bottom-nav { display: flex; }
+}
+
+/* Bottom nav item */
+.mobile-bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  height: 100%;
+  cursor: pointer;
+  text-decoration: none;
+  color: rgba(226,232,240,0.45);
+  transition: color 0.2s ease;
+  font-size: 0.6rem;
+  font-weight: 500;
+  padding: 4px 2px;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-bottom-nav-item.active {
+  color: #2F80ED;
+}
+
+.mobile-bottom-nav-item span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 56px;
+  text-align: center;
+}
+
+/* Add bottom padding to main content so it isn't hidden behind nav bar */
+@media (max-width: 1023px) {
+  .main-content-area {
+    padding-bottom: 72px !important;
+  }
+}
+
+/* Sidebar drawer overlay backdrop */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 49;
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 1023px) {
+  .sidebar-backdrop.open { display: block; }
+}
+
+/* On mobile: sidebar is a fixed overlay drawer */
+@media (max-width: 1023px) {
+  .sidebar-drawer {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease !important;
+    width: 224px !important;
+    box-shadow: 4px 0 32px rgba(0,0,0,0.5);
+  }
+  .sidebar-drawer.open {
+    transform: translateX(0) !important;
+  }
+}
+
+/* Hide the collapse toggle on mobile (sidebar is always full-width drawer) */
+@media (max-width: 1023px) {
+  .sidebar-collapse-btn { display: none !important; }
+}
+
+/* ---- Page Layout: main content area on desktop has sidebar offset */
+@media (min-width: 1024px) {
+  .sidebar-backdrop { display: none !important; }
+}
+
+/* ---- Top header tweaks on mobile -------------------------- */
+@media (max-width: 640px) {
+  .topbar-search  { display: none !important; }
+  .topbar-xpbar   { display: none !important; }
+  .topbar-streak  { display: none !important; }
+}
+
+@media (max-width: 1023px) {
+  .topbar-page-subtitle { display: none !important; }
+}
+
+/* ---- Dashboard main 2-col grid ----------------------------- */
+.dashboard-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 18px;
+}
+@media (max-width: 1199px) {
+  .dashboard-main-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- Page-specific named grids ---------------------------- */
+
+/* QuizArena: (main | 280px sidebar) → 1 col on mobile */
+.quiz-arena-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 20px;
+}
+@media (max-width: 1023px) {
+  .quiz-arena-grid { grid-template-columns: 1fr; }
+}
+
+/* Resources: (main | 280px sidebar) → 1 col on tablet/mobile */
+.resources-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 20px;
+}
+@media (max-width: 1199px) {
+  .resources-main-grid { grid-template-columns: 1fr; }
+}
+
+/* Leaderboard bottom: (table | 300px sidebar) → 1 col */
+.leaderboard-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+}
+@media (max-width: 1199px) {
+  .leaderboard-bottom-grid { grid-template-columns: 1fr; }
+}
+
+/* Analytics charts row 1: (main | 380px) → 1 col */
+.analytics-charts-1 {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 18px;
+}
+@media (max-width: 1199px) {
+  .analytics-charts-1 { grid-template-columns: 1fr; }
+}
+
+/* Profile bottom: (main | 320px) → 1 col */
+.profile-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+}
+@media (max-width: 1199px) {
+  .profile-bottom-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- Scrollbar utilities ----------------------------------- */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-thin::-webkit-scrollbar { width: 4px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
