@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio - Manasvi Shelke</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00d2d3;
+            --bg-color: #121212;
+            --bg-light: #1e1e1e;
+            --text-color: #f0f0f0;
+            --text-secondary: #aaaaaa;
+            --font-main: 'Poppins', sans-serif;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth; }
+        body { font-family:var(--font-main); background:var(--bg-color); color:var(--text-color); line-height:1.6; }
+        a { text-decoration:none; color:inherit; }
+        ul { list-style:none; }
+        .container { max-width:1100px; margin:0 auto; padding:0 20px; }
+
+        /* Nav */
+        header { background:rgba(18,18,18,0.95); padding:20px 0; position:sticky; top:0; z-index:1000; border-bottom:1px solid #333; }
+        nav { display:flex; justify-content:space-between; align-items:center; }
+        .logo { font-size:1.5rem; font-weight:700; }
+        .logo span { color:var(--primary-color); }
+        .nav-links { display:flex; gap:30px; align-items:center; }
+        .nav-links a { font-weight:500; transition:color 0.3s; }
+        .nav-links a:hover { color:var(--primary-color); }
+        .btn-main { background:var(--primary-color); color:#121212 !important; padding:10px 20px; border-radius:5px; font-weight:600 !important; }
+        .btn-main:hover { opacity:0.8; }
+
+        /* Hero */
+        .hero { height:90vh; display:flex; align-items:center; justify-content:center; text-align:center; }
+        .hero h3 { font-size:1.5rem; color:var(--primary-color); margin-bottom:10px; }
+        .hero h1 { font-size:4rem; margin-bottom:20px; line-height:1.1; }
+        .hero p { font-size:1.1rem; color:var(--text-secondary); max-width:600px; margin:0 auto 40px; }
+        .hero-btns { display:flex; gap:20px; justify-content:center; }
+        .btn-primary, .btn-secondary { padding:12px 30px; border-radius:5px; font-weight:600; transition:all 0.3s ease; }
+        .btn-primary { background:var(--primary-color); color:#121212; }
+        .btn-secondary { border:2px solid var(--primary-color); color:var(--primary-color); }
+        .btn-primary:hover, .btn-secondary:hover { transform:translateY(-3px); }
+
+        /* Sections */
+        .section { padding:80px 0; }
+        .section-title { text-align:center; font-size:2.5rem; margin-bottom:60px; }
+
+        /* About */
+        .about-content { text-align:center; max-width:800px; margin:0 auto; }
+        .skills { margin-top:30px; display:flex; justify-content:center; gap:15px; flex-wrap:wrap; }
+        .skills span { background:var(--bg-light); padding:8px 16px; border-radius:20px; font-size:0.9rem; color:var(--primary-color); border:1px solid #333; }
+
+        /* Projects */
+        .bg-dark { background:#0f0f0f; }
+        .project-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:30px; }
+        .card { background:var(--bg-light); border-radius:10px; overflow:hidden; transition:transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform:translateY(-10px); box-shadow:0 10px 20px rgba(0,210,211,0.1); }
+        .card-image { height:200px; background:linear-gradient(45deg,#222,#333); width:100%; }
+        .card-info { padding:25px; }
+        .card-info h3 { margin-bottom:10px; }
+        .card-info p { color:var(--text-secondary); font-size:0.9rem; margin-bottom:20px; }
+        .card-info a { color:var(--primary-color); font-weight:600; border-bottom:2px solid transparent; }
+        .card-info a:hover { border-bottom:2px solid var(--primary-color); }
+
+        /* DB panel — NEW quick links for the assignment */
+        .db-panel { background:var(--bg-light); border:1px solid #2a2a2a; border-radius:12px; padding:35px; text-align:center; margin-top:50px; }
+        .db-panel h3 { color:var(--primary-color); font-size:1.4rem; margin-bottom:10px; }
+        .db-panel p { color:var(--text-secondary); font-size:0.93rem; margin-bottom:25px; }
+        .db-links { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+        .db-link { padding:11px 24px; border-radius:7px; font-weight:600; font-size:0.9rem; border:2px solid var(--primary-color); color:var(--primary-color); transition:all 0.3s; }
+        .db-link:hover { background:var(--primary-color); color:#121212; }
+        .db-link.filled { background:var(--primary-color); color:#121212; }
+        .db-link.filled:hover { opacity:0.85; }
+
+        /* Contact & Footer */
+        .contact-box { text-align:center; }
+        .contact-box p { margin-bottom:30px; color:var(--text-secondary); }
+        footer { padding:30px; text-align:center; background:#000; color:#666; font-size:0.9rem; border-top:1px solid #222; }
+
+        @media(max-width:768px) {
+            .nav-links { display:none; }
+            .hero h1 { font-size:2.5rem; }
+            .hero-btns { flex-direction:column; width:100%; max-width:300px; margin:0 auto; }
+            .db-links { flex-direction:column; align-items:center; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="container">
+        <div class="logo">Portfo<span>lio.</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="registration.php" class="btn-main">Register</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section id="home" class="hero">
+    <div class="container hero-content">
+        <h3>Hello, I'm</h3>
+        <h1>Manasvi Shelke</h1>
+        <p>A passionate developer creating clean, user-friendly web experiences</p>
+        <div class="hero-btns">
+            <a href="#projects" class="btn-primary">View My Work</a>
+            <a href="#about" class="btn-secondary">More About Me</a>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="section">
+    <div class="container">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-content">
+            <p>I am a passionate developer with a knack for creating clean, user-friendly designs. I specialize in HTML, CSS, and modern JavaScript frameworks. When I'm not coding, you can find me exploring new design trends or hiking in the mountains.</p>
+            <div class="skills">
+                <span>HTML5</span><span>CSS3</span><span>JavaScript</span>
+                <span>PHP</span><span>MySQL</span><span>jQuery</span><span>UI/UX</span>
+            </div>
+        </div>
+
+        <!-- Student Registration System panel -->
+        <div class="db-panel">
+            <h3>🎓 Student Registration System</h3>
+            <p>Full-stack PHP + MySQL CRUD application — Insert, View, Update &amp; Delete student records.</p>
+            <div class="db-links">
+                <a href="registration.php"   class="db-link filled">➕ Register Student</a>
+                <a href="view_students.php"  class="db-link">📋 View All Students</a>
+                <a href="search_student.php" class="db-link">🔍 Search / Update / Delete</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="projects" class="section bg-dark">
+    <div class="container">
+        <h2 class="section-title">My Projects</h2>
+        <div class="project-grid">
+            <div class="card">
+                <div class="card-image"></div>
+                <div class="card-info">
+                    <h3>E-Commerce App</h3>
+                    <p>A full-featured shopping platform with cart functionality.</p>
+                    <a href="#">View Details →</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-image"></div>
+                <div class="card-info">
+                    <h3>Finance Dashboard</h3>
+                    <p>Data visualization dashboard for personal finance tracking.</p>
+                    <a href="#">View Details →</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-image"></div>
+                <div class="card-info">
+                    <h3>Travel Blog</h3>
+                    <p>A responsive blog layout for travel enthusiasts.</p>
+                    <a href="#">View Details →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="section">
+    <div class="container contact-box">
+        <h2 class="section-title">Get In Touch</h2>
+        <p>Have a project in mind? Let's build something amazing together.</p>
+        <a href="mailto:manasvi@example.com" class="btn-primary">Send an Email</a>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2024 Manasvi Shelke. All Rights Reserved.</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
