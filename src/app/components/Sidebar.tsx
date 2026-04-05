@@ -4,8 +4,8 @@ import {
   LayoutDashboard, Users, Zap, BookOpen, Trophy, BarChart2, User,
   ChevronRight, Bell, Settings, LogOut, X,
 } from 'lucide-react';
-import { currentUser } from '../data/mockData';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', to: '/', color: '#2F80ED' },
@@ -26,6 +26,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
@@ -280,12 +281,13 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           }}>
             <div style={{
               width: 34, height: 34, borderRadius: '10px',
-              background: 'linear-gradient(135deg, #2F80ED, #7B61FF)',
+              background: user?.color ? `${user.color}30` : 'linear-gradient(135deg, #2F80ED, #7B61FF)',
+              border: `2px solid ${user?.color ?? '#2F80ED'}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '0.75rem', fontWeight: 700, color: 'white',
+              fontSize: '0.85rem', fontWeight: 700, color: 'white',
               flexShrink: 0, boxShadow: '0 0 12px rgba(47,128,237,0.4)',
             }}>
-              {currentUser.avatar}
+              {user?.avatar ?? '😊'}
             </div>
             <AnimatePresence>
               {showExpanded && (
@@ -296,15 +298,15 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                   style={{ flex: 1, minWidth: 0 }}
                 >
                   <p style={{ color: 'white', fontSize: '0.8rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {currentUser.name}
+                    {user?.name ?? 'User'}
                   </p>
                   <p style={{ color: '#FACC15', fontSize: '0.65rem' }}>
-                    Lv.{currentUser.level} · {currentUser.badge}
+                    Lv.{user?.level ?? 1} · {user?.badge ?? 'Newcomer'}
                   </p>
                 </motion.div>
               )}
             </AnimatePresence>
-            {showExpanded && <LogOut size={14} style={{ color: 'rgba(226,232,240,0.3)', flexShrink: 0 }} />}
+            {showExpanded && <LogOut size={14} onClick={logout} style={{ color: 'rgba(226,232,240,0.4)', flexShrink: 0, cursor: 'pointer' }} />}
           </div>
         </div>
       </motion.aside>

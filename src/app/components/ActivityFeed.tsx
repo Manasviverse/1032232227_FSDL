@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Upload, Zap, Users, CheckCircle, Award, Flame } from 'lucide-react';
-import { activities } from '../data/mockData';
+import { useState, useEffect } from 'react';
+import { activityService, type ApiActivity } from '../services/activityService';
 import { GlassCard } from './GlassCard';
 
 const typeConfig = {
@@ -13,6 +14,16 @@ const typeConfig = {
 };
 
 export function ActivityFeed() {
+  const [activities, setActivities] = useState<ApiActivity[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    activityService.getAll()
+      .then(setActivities)
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <GlassCard className="p-5" delay={0.2}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
@@ -41,7 +52,7 @@ export function ActivityFeed() {
           const config = typeConfig[activity.type];
           return (
             <motion.div
-              key={activity.id}
+              key={activity._id || i}
               initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.06 + 0.2 }}

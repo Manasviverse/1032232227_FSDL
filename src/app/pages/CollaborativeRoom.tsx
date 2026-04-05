@@ -1,11 +1,12 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Plus, Send, Users, X, BookOpen, MessageSquare } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { studyRooms } from '../data/mockData';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
+import { studyRoomService, type ApiStudyRoom } from '../services/studyRoomService';
 
 interface NoteCard {
   id: string;
@@ -183,14 +184,69 @@ const chatMessages = [
 
 export default function CollaborativeRoom() {
   const { id } = useParams();
-  const room = studyRooms.find(r => r.id === Number(id)) || studyRooms[0];
-  const [notes, setNotes] = useState<NoteCard[]>(initialNotes);
+  const navigate = useNavigate();
+
+  const [room, setRoom] = useState<ApiStudyRoom | any>(null);
+  const [loading, setLoading] = useState(true);
+
+  const [notes, setNotes] = useState<NoteCard[]>([]);
   const [chatMsg, setChatMsg] = useState('');
-  const [messages, setMessages] = useState(chatMessages);
+  const [messages, setMessages] = useState<typeof chatMessages>([]);
   const [showAddNote, setShowAddNote] = useState(false);
   const [newNoteContent, setNewNoteContent] = useState('');
   const [newNoteType, setNewNoteType] = useState<'note' | 'question' | 'resource'>('note');
   const [activeTab, setActiveTab] = useState<'board' | 'resources'>('board');
+
+  useEffect(() => {
+    async function loadRoom() {
+      if (!id) return;
+      try {
+        setLoading(true);
+        if (isNaN(Number(id))) {
+          // It's a real MongoDB ID
+          const fetchedRoom = await studyRoomService.getById(id);
+          setRoom(fetchedRoom);
+          
+          // If the room was created within the last 15 minutes, it's a "newly added" room
+          const isNewlyCreated = fetchedRoom.createdAt 
+            ? (new Date().getTime() - new Date(fetchedRoom.createdAt).getTime()) < 15 * 60 * 1000 
+            : false;
+
+          if (isNewlyCreated) {
+            setNotes([]);
+            setMessages([]);
+          } else {
+            setNotes(initialNotes);
+            setMessages(chatMessages);
+          }
+        } else {
+          // Fallback to Mock Data
+          const mockRoom = studyRooms.find(r => r.id === Number(id));
+          if (mockRoom) {
+            setRoom(mockRoom);
+            setNotes(initialNotes);
+            setMessages(chatMessages);
+          } else {
+            navigate('/study-rooms');
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load room:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadRoom();
+  }, [id, navigate]);
+
+  if (loading || !room) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+         <p style={{ color: 'rgba(226,232,240,0.5)', fontSize: '1.2rem' }}>Loading Room Details...</p>
+      </div>
+    )
+  }
+
 
   const handleMove = (id: string, x: number, y: number) => {
     setNotes(prev => prev.map(n => n.id === id ? { ...n, x, y } : n));
@@ -239,12 +295,12 @@ export default function CollaborativeRoom() {
             </div>
             <div>
               <h2 style={{ color: 'white', margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>
-                {room.name}
+                {room?.name}
               </h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#34D399', boxShadow: '0 0 6px #34D399' }} />
                 <span style={{ color: 'rgba(226,232,240,0.5)', fontSize: '0.75rem' }}>
-                  {room.members} members online
+                  {room?.members ?? 0} members online
                 </span>
               </div>
             </div>
@@ -276,7 +332,7 @@ export default function CollaborativeRoom() {
           {/* Member Avatars */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{ display: 'flex' }}>
-              {room.memberAvatars.map((m, i) => (
+              {(room?.memberAvatars || []).map((m: any, i: number) => (
                 <div key={i} style={{
                   width: 30, height: 30, borderRadius: '50%',
                   background: m.color + '30', border: `2px solid #0F172A`,
@@ -293,7 +349,7 @@ export default function CollaborativeRoom() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '0.6rem', color: 'rgba(226,232,240,0.5)', marginLeft: -8,
               }}>
-                +{room.members - room.memberAvatars.length}
+                +{Math.max(0, (room?.members || 0) - (room?.memberAvatars?.length || 0))}
               </div>
             </div>
             <button style={{

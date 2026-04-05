@@ -7,6 +7,8 @@ interface GradientButtonProps {
   size?: "sm" | "md" | "lg";
   onClick?: () => void;
   className?: string;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 export function GradientButton({ 
@@ -14,7 +16,9 @@ export function GradientButton({
   variant = "primary", 
   size = "md",
   onClick,
-  className = ""
+  className = "",
+  type = "button",
+  disabled = false,
 }: GradientButtonProps) {
   const gradients = {
     primary: "bg-gradient-to-br from-[#0047BA] to-[#0056D6]",
@@ -33,8 +37,10 @@ export function GradientButton({
     <motion.button
       whileHover={{ scale: 1.05, y: -2 }}
       whileTap={{ scale: 0.98 }}
-      className={`${gradients[variant]} ${sizes[size]} text-white rounded-2xl shadow-lg hover:shadow-xl transition-all ${className}`}
+      className={`${gradients[variant]} ${sizes[size]} text-white rounded-2xl shadow-lg hover:shadow-xl transition-all disabled:cursor-not-allowed disabled:opacity-70 ${className}`}
       onClick={onClick}
+      type={type}
+      disabled={disabled}
     >
       {children}
     </motion.button>

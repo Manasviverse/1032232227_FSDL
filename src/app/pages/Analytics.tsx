@@ -1,11 +1,18 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart,
 } from 'recharts';
 import { TrendingUp, BookOpen, Zap, Users, Clock, Award } from 'lucide-react';
-import { studyHoursData, quizPerformanceData, contributionData, weeklyStats } from '../data/mockData';
 import { GlassCard, StatCard } from '../components/GlassCard';
+import {
+  analyticsService,
+  type ApiWeeklyStats,
+  type ApiStudyHourData,
+  type ApiQuizPerformance,
+  type ApiContribution
+} from '../services/analyticsService';
 
 const customTooltipStyle = {
   contentStyle: {
@@ -18,11 +25,23 @@ const customTooltipStyle = {
 };
 
 export default function Analytics() {
+  const [weeklyStats, setWeeklyStats] = useState<ApiWeeklyStats | null>(null);
+  const [studyHoursData, setStudyHoursData] = useState<ApiStudyHourData[]>([]);
+  const [quizPerformanceData, setQuizPerformanceData] = useState<ApiQuizPerformance[]>([]);
+  const [contributionData, setContributionData] = useState<ApiContribution[]>([]);
+
+  useEffect(() => {
+    analyticsService.getWeeklyStats().then(setWeeklyStats).catch(() => {});
+    analyticsService.getStudyHours().then(setStudyHoursData).catch(() => {});
+    analyticsService.getQuizPerformance().then(setQuizPerformanceData).catch(() => {});
+    analyticsService.getContributions().then(setContributionData).catch(() => {});
+  }, []);
+
   const stats = [
-    { label: 'Study Hours', value: `${weeklyStats.studyHours}h`, icon: <Clock size={18} />, color: '#2F80ED', change: '↑ 12% vs last week' },
-    { label: 'Quizzes Taken', value: weeklyStats.quizzesTaken, icon: <Zap size={18} />, color: '#FACC15', change: '↑ 5 more than last week' },
-    { label: 'XP Earned', value: weeklyStats.xpEarned.toLocaleString(), icon: <Award size={18} />, color: '#7B61FF', change: '↑ 8% vs last week' },
-    { label: 'Rooms Joined', value: weeklyStats.roomsJoined, icon: <Users size={18} />, color: '#2DD4BF', change: 'Across 4 subjects' },
+    { label: 'Study Hours', value: `${weeklyStats?.studyHours ?? 0}h`, icon: <Clock size={18} />, color: '#2F80ED', change: '↑ 12% vs last week' },
+    { label: 'Quizzes Taken', value: weeklyStats?.quizzesTaken ?? 0, icon: <Zap size={18} />, color: '#FACC15', change: '↑ 5 more than last week' },
+    { label: 'XP Earned', value: (weeklyStats?.xpEarned ?? 0).toLocaleString(), icon: <Award size={18} />, color: '#7B61FF', change: '↑ 8% vs last week' },
+    { label: 'Rooms Joined', value: weeklyStats?.roomsJoined ?? 0, icon: <Users size={18} />, color: '#2DD4BF', change: 'Across 4 subjects' },
   ];
 
   return (
@@ -189,11 +208,13 @@ export default function Analytics() {
               { label: 'Top Contributor (22/30 resources)', progress: 73, color: '#2DD4BF', icon: '⭐' },
               { label: 'Perfectionist (4/10 perfect quizzes)', progress: 40, color: '#FB7185', icon: '💎' },
             ].map((item, i) => (
-              <motion.div
+              <div
                 key={item.label}
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.07 + 0.3 }}
+                style={{
+                  opacity: 1,
+                  transform: 'none',
+                  animation: `slideIn 0.5s ease-out ${i * 0.07 + 0.3}s backwards`
+                }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -203,16 +224,15 @@ export default function Analytics() {
                   <span style={{ color: item.color, fontSize: '0.75rem', fontWeight: 600 }}>{item.progress}%</span>
                 </div>
                 <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${item.progress}%` }}
-                    transition={{ duration: 1, delay: i * 0.1 + 0.5, ease: 'easeOut' }}
+                  <div
                     style={{
                       height: '100%',
+                      width: `${item.progress}%`,
                       background: `linear-gradient(90deg, ${item.color}99, ${item.color})`,
                       borderRadius: 3,
                       boxShadow: `0 0 6px ${item.color}60`,
                       position: 'relative',
+                      animation: `expandWidth 1s ease-out ${i * 0.1 + 0.5}s backwards`
                     }}
                   >
                     {/* Shimmer */}
@@ -222,9 +242,9 @@ export default function Analytics() {
                       backgroundSize: '200% 100%',
                       animation: 'shimmer 2s linear infinite',
                     }} />
-                  </motion.div>
+                  </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </GlassCard>
@@ -247,11 +267,12 @@ export default function Analytics() {
             { name: 'Legend', level: '51+', emoji: '👑', color: '#FB7185', done: false },
           ].map((stage, i, arr) => (
             <div key={stage.name} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: i * 0.1 + 0.3 }}
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 100 }}
+              <div
+                style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 100,
+                  transform: 'scale(1)',
+                  animation: `popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${i * 0.1 + 0.3}s backwards`
+                }}
               >
                 <div style={{
                   width: stage.current ? 56 : 44,
@@ -283,7 +304,7 @@ export default function Analytics() {
                     <span style={{ color: stage.color, fontSize: '0.58rem', fontWeight: 600 }}>YOU ARE HERE</span>
                   </div>
                 )}
-              </motion.div>
+              </div>
 
               {/* Connector */}
               {i < arr.length - 1 && (

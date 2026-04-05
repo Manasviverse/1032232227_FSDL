@@ -1,6 +1,8 @@
 import { motion } from 'motion/react';
 import { Trophy, TrendingUp } from 'lucide-react';
-import { users } from '../data/mockData';
+import { useState, useEffect } from 'react';
+import { userService } from '../services/userService';
+import type { AuthUser } from '../services/authService';
 import { GlassCard } from './GlassCard';
 import { useNavigate } from 'react-router';
 
@@ -10,7 +12,11 @@ const rankEmoji = ['👑', '🥈', '🥉'];
 
 export function LeaderboardWidget() {
   const navigate = useNavigate();
-  const top5 = users.slice(0, 5);
+  const [top5, setTop5] = useState<AuthUser[]>([]);
+
+  useEffect(() => {
+    userService.getAll().then(users => setTop5(users.slice(0, 5))).catch(() => {});
+  }, []);
 
   return (
     <GlassCard className="p-5" delay={0.15}>

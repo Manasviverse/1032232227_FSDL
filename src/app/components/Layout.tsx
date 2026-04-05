@@ -2,9 +2,10 @@ import { Outlet, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { NavLink } from 'react-router';
 import { Sidebar } from './Sidebar';
-import { Search, Bell, Flame, Menu, LayoutDashboard, Users, Zap, BookOpen, Trophy, BarChart2, User } from 'lucide-react';
-import { currentUser } from '../data/mockData';
+import { Search, Bell, Flame, Menu, LayoutDashboard, Users, Zap, BookOpen, Trophy, BarChart2, User, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { Auth } from '../pages/Auth';
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
   '/': { title: 'Dashboard', subtitle: 'Welcome back, Alex! Ready to level up? 🚀' },
@@ -36,6 +37,24 @@ export function Layout() {
   const location = useLocation();
   const pageInfo = getPageInfo(location.pathname);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
+
+  // Show loading shimmer while hydrating auth state from localStorage
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#0F172A' }}>
+        <div style={{ color: 'rgba(226,232,240,0.4)', fontSize: '0.9rem' }}>Loading EduSync…</div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%)' }}>
+        <Auth />
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#0F172A' }}>
@@ -161,7 +180,7 @@ export function Layout() {
             }}>
             <Flame size={14} style={{ color: '#F97316', filter: 'drop-shadow(0 0 4px #F97316)' }} />
             <span style={{ color: '#F97316', fontSize: '0.8rem', fontWeight: 600 }}>
-              {currentUser.streak}d
+              {user?.streak ?? 0}d
             </span>
           </div>
 
@@ -189,18 +208,19 @@ export function Layout() {
           <div className="topbar-xpbar" style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
             <div style={{
               width: 34, height: 34, borderRadius: '10px',
-              background: 'linear-gradient(135deg, #2F80ED, #7B61FF)',
+              background: user?.color ? `${user.color}30` : 'rgba(47,128,237,0.2)',
+              border: `2px solid ${user?.color ?? '#2F80ED'}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '0.7rem', fontWeight: 700, color: 'white',
+              fontSize: '0.9rem', fontWeight: 700, color: 'white',
               boxShadow: '0 0 12px rgba(47,128,237,0.4)',
               flexShrink: 0,
             }}>
-              {currentUser.avatar}
+              {user?.avatar ?? '😊'}
             </div>
             <div style={{ minWidth: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-                <span style={{ color: 'white', fontSize: '0.75rem', fontWeight: 600 }}>Lv.{currentUser.level}</span>
-                <span style={{ color: '#FACC15', fontSize: '0.65rem' }}>{currentUser.xp}/{currentUser.totalXP} XP</span>
+                <span style={{ color: 'white', fontSize: '0.75rem', fontWeight: 600 }}>Lv.{user?.level ?? 1}</span>
+                <span style={{ color: '#FACC15', fontSize: '0.65rem' }}>{user?.xp ?? 0}/{user?.totalXP ?? 1000} XP</span>
               </div>
               <div style={{
                 width: 80, height: 4, borderRadius: 4,
@@ -209,7 +229,7 @@ export function Layout() {
               }}>
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{ width: `${(currentUser.xp / currentUser.totalXP) * 100}%` }}
+                  animate={{ width: `${((user?.xp ?? 0) / (user?.totalXP ?? 1000)) * 100}%` }}
                   transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
                   style={{
                     height: '100%',
@@ -220,16 +240,30 @@ export function Layout() {
                 />
               </div>
             </div>
+            <button
+              onClick={logout}
+              title="Logout"
+              style={{
+                width: 30, height: 30, borderRadius: '8px',
+                background: 'rgba(251,113,133,0.1)',
+                border: '1px solid rgba(251,113,133,0.2)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', color: '#FB7185', flexShrink: 0,
+              }}
+            >
+              <LogOut size={13} />
+            </button>
           </div>
         </header>
+
 
         {/* Main Content */}
         <main
           style={{
             flex: 1,
             overflowY: 'auto',
-            overflowX: 'hidden',
             padding: '24px',
+            position: 'relative',
           }}
           className="scrollbar-thin main-content-area"
         >

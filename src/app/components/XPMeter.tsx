@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Flame, Zap, TrendingUp } from 'lucide-react';
-import { currentUser } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
 import { GlassCard } from './GlassCard';
 
 const levels = [
@@ -17,8 +17,13 @@ function getCurrentLevelInfo(level: number) {
 }
 
 export function XPMeter() {
-  const xpPercent = (currentUser.xp / currentUser.totalXP) * 100;
-  const levelInfo = getCurrentLevelInfo(currentUser.level);
+  const { user } = useAuth();
+  const xp = user?.xp ?? 0;
+  const totalXP = user?.totalXP ?? 1000;
+  const level = user?.level ?? 1;
+  const streak = user?.streak ?? 0;
+  const xpPercent = (xp / totalXP) * 100;
+  const levelInfo = getCurrentLevelInfo(level);
 
   return (
     <GlassCard className="p-5" delay={0.1}>
@@ -35,7 +40,7 @@ export function XPMeter() {
           </div>
           <div>
             <p style={{ color: 'rgba(226,232,240,0.6)', fontSize: '0.72rem' }}>XP Progress</p>
-            <p style={{ color: 'white', fontSize: '0.85rem', fontWeight: 600 }}>Level {currentUser.level}</p>
+            <p style={{ color: 'white', fontSize: '0.85rem', fontWeight: 600 }}>Level {level}</p>
           </div>
         </div>
         <div style={{
@@ -55,10 +60,10 @@ export function XPMeter() {
       <div style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
           <span style={{ color: 'rgba(226,232,240,0.5)', fontSize: '0.72rem' }}>
-            {currentUser.xp.toLocaleString()} XP
+            {xp.toLocaleString()} XP
           </span>
           <span style={{ color: 'rgba(226,232,240,0.5)', fontSize: '0.72rem' }}>
-            {currentUser.totalXP.toLocaleString()} XP
+            {totalXP.toLocaleString()} XP
           </span>
         </div>
         <div style={{
@@ -96,7 +101,7 @@ export function XPMeter() {
           </motion.div>
         </div>
         <p style={{ color: 'rgba(226,232,240,0.4)', fontSize: '0.7rem', marginTop: 4, textAlign: 'center' }}>
-          {currentUser.totalXP - currentUser.xp} XP to Level {currentUser.level + 1}
+          {totalXP - xp} XP to Level {level + 1}
         </p>
       </div>
 
@@ -115,7 +120,7 @@ export function XPMeter() {
           <span style={{ fontSize: '1.3rem', animation: 'streak-flame 0.8s ease-in-out infinite' }}>🔥</span>
           <div>
             <p style={{ color: '#F97316', fontSize: '0.8rem', fontWeight: 600 }}>
-              {currentUser.streak} Day Streak!
+              {streak} Day Streak!
             </p>
             <p style={{ color: 'rgba(226,232,240,0.4)', fontSize: '0.68rem' }}>
               Keep it going!

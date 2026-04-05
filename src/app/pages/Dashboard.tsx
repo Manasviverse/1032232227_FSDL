@@ -6,20 +6,28 @@ import { ActivityFeed } from '../components/ActivityFeed';
 import { LeaderboardWidget } from '../components/LeaderboardWidget';
 import { QuizTimerWidget } from '../components/QuizTimerWidget';
 import { GlassCard, StatCard } from '../components/GlassCard';
-import { studyRooms, currentUser, weeklyStats } from '../data/mockData';
 import { useNavigate } from 'react-router';
+import { useState, useEffect } from 'react';
+import { studyRoomService, type ApiStudyRoom } from '../services/studyRoomService';
+import { useAuth } from '../context/AuthContext';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [allRooms, setAllRooms] = useState<ApiStudyRoom[]>([]);
+
+  useEffect(() => {
+    studyRoomService.getAll().then(setAllRooms).catch(() => {});
+  }, []);
 
   const quickStats = [
     { label: 'Study Hours', value: '30.5h', icon: <BookOpen size={18} />, color: '#2F80ED', change: '↑ 12% this week' },
-    { label: 'Quiz Wins', value: currentUser.quizWins, icon: <Zap size={18} />, color: '#FACC15', change: '↑ 3 this week' },
-    { label: 'Active Rooms', value: 6, icon: <Users size={18} />, color: '#7B61FF', change: '2 live now' },
-    { label: 'XP Earned', value: '1,240', icon: <Trophy size={18} />, color: '#2DD4BF', change: '↑ 8% this week' },
+    { label: 'Quiz Wins', value: user?.quizWins ?? 0, icon: <Zap size={18} />, color: '#FACC15', change: '↑ 3 this week' },
+    { label: 'Active Rooms', value: allRooms.filter(r => r.activeNow).length || 6, icon: <Users size={18} />, color: '#7B61FF', change: '2 live now' },
+    { label: 'XP Earned', value: user?.xp?.toLocaleString() ?? '0', icon: <Trophy size={18} />, color: '#2DD4BF', change: '↑ 8% this week' },
   ];
 
-  const activeRooms = studyRooms.filter(r => r.activeNow).slice(0, 3);
+  const activeRooms = allRooms.filter(r => r.activeNow).slice(0, 3);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -55,13 +63,16 @@ export default function Dashboard() {
                 >
                   View All
                 </button>
-                <button style={{
-                  background: 'linear-gradient(135deg, #2F80ED, #7B61FF)',
-                  border: 'none', borderRadius: '8px', padding: '5px 12px',
-                  color: 'white', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 500,
-                  display: 'flex', alignItems: 'center', gap: 4,
-                  boxShadow: '0 0 12px rgba(47,128,237,0.3)',
-                }}>
+                <button
+                  onClick={() => navigate('/study-rooms')}
+                  style={{
+                    background: 'linear-gradient(135deg, #2F80ED, #7B61FF)',
+                    border: 'none', borderRadius: '8px', padding: '5px 12px',
+                    color: 'white', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 500,
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    boxShadow: '0 0 12px rgba(47,128,237,0.3)',
+                  }}
+                >
                   <Plus size={12} /> Create Room
                 </button>
               </div>
@@ -70,7 +81,7 @@ export default function Dashboard() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {activeRooms.map((room, i) => (
                 <motion.div
-                  key={room.id}
+                  key={room._id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 + 0.2 }}

@@ -1,7 +1,11 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Trophy, Zap, Flame, BookOpen, Users, Edit3, Share2 } from 'lucide-react';
-import { currentUser, achievements, activities, studyHoursData } from '../data/mockData';
 import { GlassCard } from '../components/GlassCard';
+import { useAuth } from '../context/AuthContext';
+import { analyticsService, type ApiStudyHourData } from '../services/analyticsService';
+import { achievementService, type ApiAchievement } from '../services/achievementService';
+import { activityService, type ApiActivity } from '../services/activityService';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
@@ -14,13 +18,24 @@ const rarityConfig = {
 };
 
 export default function Profile() {
+  const { user: currentUser } = useAuth();
+  const [studyHoursData, setStudyHoursData] = useState<ApiStudyHourData[]>([]);
+  const [achievements, setAchievements] = useState<ApiAchievement[]>([]);
+  const [activities, setActivities] = useState<ApiActivity[]>([]);
+
+  useEffect(() => {
+    analyticsService.getStudyHours().then(setStudyHoursData).catch(() => {});
+    achievementService.getAll().then(setAchievements).catch(() => {});
+    activityService.getAll().then(data => setActivities(data.slice(0, 6))).catch(() => {});
+  }, []);
+
   const stats = [
-    { label: 'Total XP', value: currentUser.xp.toLocaleString(), icon: <Zap size={16} />, color: '#FACC15' },
-    { label: 'Quiz Wins', value: currentUser.quizWins, icon: <Trophy size={16} />, color: '#2F80ED' },
-    { label: 'Study Streak', value: `${currentUser.streak}d`, icon: <Flame size={16} />, color: '#F97316' },
-    { label: 'Resources', value: currentUser.resourcesShared, icon: <BookOpen size={16} />, color: '#2DD4BF' },
-    { label: 'Rooms Joined', value: currentUser.joinedRooms, icon: <Users size={16} />, color: '#7B61FF' },
-    { label: 'Level', value: currentUser.level, icon: '⚡', color: '#A78BFA' },
+    { label: 'Total XP', value: (currentUser?.xp ?? 0).toLocaleString(), icon: <Zap size={16} />, color: '#FACC15' },
+    { label: 'Quiz Wins', value: currentUser?.quizWins ?? 0, icon: <Trophy size={16} />, color: '#2F80ED' },
+    { label: 'Study Streak', value: `${currentUser?.streak ?? 0}d`, icon: <Flame size={16} />, color: '#F97316' },
+    { label: 'Resources', value: currentUser?.resourcesShared ?? 0, icon: <BookOpen size={16} />, color: '#2DD4BF' },
+    { label: 'Rooms Joined', value: currentUser?.joinedRooms ?? 0, icon: <Users size={16} />, color: '#7B61FF' },
+    { label: 'Level', value: currentUser?.level ?? 1, icon: '⚡', color: '#A78BFA' },
   ];
 
   return (
@@ -88,7 +103,7 @@ export default function Profile() {
                 position: 'relative',
               }}
             >
-              {currentUser.avatar}
+              {currentUser?.avatar ?? '😊'}
               {/* Level badge */}
               <div style={{
                 position: 'absolute', bottom: -8, right: -8,
@@ -97,27 +112,27 @@ export default function Profile() {
                 color: '#0F172A', fontSize: '0.65rem', fontWeight: 800,
                 boxShadow: '0 0 10px rgba(250,204,21,0.5)',
               }}>
-                Lv.{currentUser.level}
+                Lv.{currentUser?.level ?? 1}
               </div>
             </motion.div>
 
             <div style={{ flex: 1, paddingTop: 56 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 3 }}>
                 <h1 style={{ color: 'white', fontSize: '1.3rem', fontWeight: 700, margin: 0 }}>
-                  {currentUser.name}
+                  {currentUser?.name ?? 'User'}
                 </h1>
                 <div style={{
-                  background: currentUser.badgeColor + '20',
-                  border: `1px solid ${currentUser.badgeColor}40`,
+                  background: (currentUser?.badgeColor ?? '#7B61FF') + '20',
+                  border: `1px solid ${currentUser?.badgeColor ?? '#7B61FF'}40`,
                   borderRadius: '20px', padding: '3px 10px',
-                  color: currentUser.badgeColor, fontSize: '0.72rem', fontWeight: 600,
+                  color: currentUser?.badgeColor ?? '#7B61FF', fontSize: '0.72rem', fontWeight: 600,
                   animation: 'badge-glow 2s ease-in-out infinite',
                 }}>
-                  ⭐ {currentUser.badge}
+                  ⭐ {currentUser?.badge ?? 'Learner'}
                 </div>
               </div>
               <p style={{ color: 'rgba(226,232,240,0.5)', fontSize: '0.82rem', margin: '0 0 8px' }}>
-                {currentUser.username} • Rank #{currentUser.rank} globally
+                {currentUser?.username ?? 'username'} • Rank #{currentUser?.rank ?? 99} globally
               </p>
               {/* XP Bar */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -129,7 +144,7 @@ export default function Profile() {
                 }}>
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: `${(currentUser.xp / currentUser.totalXP) * 100}%` }}
+                    animate={{ width: `${(currentUser?.xp ?? 0) / ((currentUser as any)?.totalXP ?? 5000) * 100}%` }}
                     transition={{ duration: 1.5, delay: 0.3 }}
                     style={{
                       height: '100%',
@@ -140,7 +155,7 @@ export default function Profile() {
                   />
                 </div>
                 <span style={{ color: '#7B61FF', fontSize: '0.75rem', fontWeight: 600 }}>
-                  {currentUser.xp}/{currentUser.totalXP} XP
+                  {currentUser?.xp ?? 0}/{(currentUser as any)?.totalXP ?? 5000} XP
                 </span>
               </div>
             </div>
@@ -188,10 +203,10 @@ export default function Profile() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: 10 }}>
               {achievements.map((achievement, i) => {
-                const rarity = rarityConfig[achievement.rarity];
+                const rarity = rarityConfig[(achievement.rarity as keyof typeof rarityConfig) || 'common'];
                 return (
                   <motion.div
-                    key={achievement.id}
+                    key={achievement._id}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: i * 0.04 + 0.1 }}
@@ -280,7 +295,7 @@ export default function Profile() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {activities.slice(0, 6).map((act, i) => (
                 <motion.div
-                  key={act.id}
+                  key={act._id}
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.06 + 0.2 }}
@@ -298,7 +313,7 @@ export default function Profile() {
                   </div>
                   <div>
                     <p style={{ color: 'rgba(226,232,240,0.75)', fontSize: '0.75rem', lineHeight: 1.4, margin: 0 }}>
-                      <span style={{ color: 'white', fontWeight: 600 }}>{act.user.split(' ')[0]}</span>
+                      <span style={{ color: 'white', fontWeight: 600 }}>{(act as any).user?.split(' ')[0] ?? 'User'}</span>
                       {' '}{act.action}{' '}
                       <span style={{ color: act.userColor }}>{act.target}</span>
                     </p>
@@ -314,7 +329,7 @@ export default function Profile() {
           {/* Streak Calendar */}
           <GlassCard className="p-5" delay={0.25}>
             <h3 style={{ color: 'white', fontSize: '0.9rem', fontWeight: 600, margin: '0 0 14px' }}>
-              🔥 {currentUser.streak}-Day Streak
+              🔥 {currentUser?.streak ?? 0}-Day Streak
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 5 }}>
               {Array.from({ length: 28 }, (_, i) => {
